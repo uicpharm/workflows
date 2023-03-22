@@ -1,0 +1,12 @@
+name: "Setup and Install Dependencies"
+description: "Sets up the project and installs dependencies"
+
+runs:
+   using: "composite"
+   steps:
+      - uses: actions/setup-node@v3
+        with:
+            node-version-file: ".nvmrc"
+            cache: "npm"
+      - run: npm ci
+        shell: bash
