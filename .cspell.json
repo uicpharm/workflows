@@ -1,0 +1,11 @@
+{
+   "import": [ "@uicpharm/standardization/.cspell.json" ],
+   "ignorePaths": [
+      ".git"
+   ],
+   "words": [
+      "booxmedialtd",
+      "martinbeentjes",
+      "myproject"
+   ]
+}
