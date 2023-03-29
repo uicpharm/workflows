@@ -18,14 +18,25 @@ runs:
             registry: ghcr.io
             username: ${{ github.actor }}
             password: ${{ github.token }}
+      - name: Set version tags
+        # If full version is same as maj.min.patch, then provide all variants. i.e. "1.2.3" will provide: latest, 1, 1.2, 1.2.3
+        # However, if it doesn't match, then it's a prerelease like "1.2.3-beta.1". Tag JUST the exact prerelease version.
+        run: |
+            repo=ghcr.io/${{ github.repository }}
+            maj=${repo}:${{ steps.semver.outputs.major }}
+            min=${repo}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
+            pat=${repo}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}.${{ steps.semver.outputs.patch }}
+            fullversion=${repo}:${{ steps.semver.outputs.fullversion }}
+            latest=${repo}:latest
+            if [[ "$fullversion" == "$pat" ]]; then
+               echo DOCKER_IMAGE_TAGS=$latest,$maj,$min,$pat >> $GITHUB_ENV
+            else
+               echo DOCKER_IMAGE_TAGS=$fullversion >> $GITHUB_ENV
+            fi
+        shell: bash
       - name: Build and publish
         uses: docker/build-push-action@v4
         with:
             context: .
             push: true
-            tags: |
-               ghcr.io/${{ github.repository }}:latest
-               ghcr.io/${{ github.repository }}:${{ steps.semver.outputs.major }}
-               ghcr.io/${{ github.repository }}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
-               ghcr.io/${{ github.repository }}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}.${{ steps.semver.outputs.patch }}
-               ghcr.io/${{ github.repository }}:${{ steps.semver.outputs.fullversion }}
+            tags: ${{ env.DOCKER_IMAGE_TAGS }}
