@@ -1,9 +1,9 @@
 {
    "name": "workflows",
-   "version": "1.0.0",
+   "version": "1.0.2",
    "description": "Reusable workflows for uicpharm UIC Pharmacy projects.",
    "scripts": {
-      "test": "check-node-version --node 18.14.2 --npm 9.5.0",
+      "test": "check-node-version --node 20.10.0 --npm 10.2.3",
       "standards": "npm run yamllint && npm run markdownlint && npm run cspell && npm run commitlint",
       "commitlint": "commitlint --from 52948ca0c9552bc",
       "cspell": "cspell . --show-suggestions --no-progress",
@@ -18,6 +18,6 @@
    },
    "homepage": "https://github.com/uicpharm/workflows#readme",
    "devDependencies": {
-      "@uicpharm/standardization": "github:uicpharm/standardization#0.1.0"
+      "@uicpharm/standardization": "github:uicpharm/standardization#0.3.0"
    }
 }
