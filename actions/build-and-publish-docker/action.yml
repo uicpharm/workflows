@@ -43,6 +43,9 @@ runs:
                echo DOCKER_IMAGE_TAGS=$fullversion >> $GITHUB_ENV
             fi
         shell: bash
+      - name: Check for uncommitted changes to code
+        run: if [ -n "$(git status --porcelain)" ]; then echo 'There are uncommitted changes.'; exit 1; fi
+        shell: bash
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx

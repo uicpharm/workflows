@@ -16,3 +16,4 @@ jobs:
          - uses: uicpharm/workflows/actions/setup-and-install@v1
          - run: npm run test --if-present
          - run: npm run standards --if-present
+         - run: if [ -n "$(git status --porcelain)" ]; then echo 'There are uncommitted changes.'; exit 1; fi
