@@ -1,6 +1,12 @@
 name: "Build and Publish Docker Image"
 description: "Build and publish Docker image to GHCR, with version tags based on package version"
 inputs:
+   name:
+      description: 'Name of the Docker image (Default: repository name)'
+      default: ${{ github.repository }}
+   file:
+      description: 'Dockerfile to use for the build (Default: Dockerfile)'
+      default: 'Dockerfile'
    platforms:
       description: 'List of platforms to publish'
       default: 'linux/amd64,linux/arm64'
@@ -25,7 +31,7 @@ runs:
         # If full version is same as maj.min.patch, then provide all variants. i.e. "1.2.3" will provide: latest, 1, 1.2, 1.2.3
         # However, if it doesn't match, then it's a prerelease like "1.2.3-beta.1". Tag JUST the exact prerelease version.
         run: |
-            repo=ghcr.io/${{ github.repository }}
+            repo=ghcr.io/${{ inputs.name }}
             maj=${repo}:${{ steps.semver.outputs.major }}
             min=${repo}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
             pat=${repo}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}.${{ steps.semver.outputs.patch }}
@@ -45,6 +51,7 @@ runs:
         uses: docker/build-push-action@v4
         with:
             context: .
+            file: ${{ inputs.file }}
             platforms: ${{ inputs.platforms }}
             push: true
             tags: ${{ env.DOCKER_IMAGE_TAGS }}
