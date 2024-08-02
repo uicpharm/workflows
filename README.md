@@ -75,6 +75,14 @@ a project builds successfully.
 
 Called as: `uicpharm/workflows/.github/workflows/build.yml@v1`
 
+### `check-version.yml`
+
+Checks that the version in your project's `package.json` file matches the tagged version.
+Intended to be used when pushing a tagged version, and is useful as a precautionary step
+before publishing a Docker image.
+
+Called as: `uicpharm/workflows/.github/workflows/check-version.yml@v1`
+
 ### `context-dump.yml`
 
 Dumps all existing contexts to the logs. Just for debugging purposes.
