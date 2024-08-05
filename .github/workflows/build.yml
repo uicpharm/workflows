@@ -1,5 +1,11 @@
 name: Build
 
+#
+# This workflow just checks out the project, installs Node and dependencies, and runs the
+# build script. As a security measure, it checks that source code was not altered during
+# the process.
+#
+
 on:
    workflow_call:
    workflow_dispatch:

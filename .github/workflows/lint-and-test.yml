@@ -1,5 +1,11 @@
 name: Lint and Test
 
+#
+# This workflow checks out the project and installs Node and dependencies. Then it runs
+# the "test" and "standards" scripts, if present. Finally, it verifies that source code
+# was not altered in the process.
+#
+
 on:
    push:
    pull_request:
