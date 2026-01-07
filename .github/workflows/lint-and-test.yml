@@ -17,7 +17,7 @@ jobs:
       name: Lint and Test
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v4
+         - uses: actions/checkout@v6
            with: { fetch-depth: 0 } # We check out full depth in case commit linting occurs
          - uses: uicpharm/workflows/actions/setup-and-install@v1
          - run: npm run test --if-present

@@ -13,14 +13,14 @@ inputs:
 runs:
    using: "composite"
    steps:
-      - uses: martinbeentjes/npm-get-version-action@v1.3.1
-        id: package-version
-      - run: echo This will be release ${{ steps.package-version.outputs.current-version}}
+      - uses: uicpharm/workflows/actions/get-package-info@v1
+        id: package
+      - run: echo This will be release ${{ steps.package.outputs.version }}
         shell: bash
-      - uses: booxmedialtd/ws-action-parse-semver@v1.4.7
+      - uses: uicpharm/workflows/actions/parse-semver@v1
         id: semver
         with:
-            input_string: ${{ steps.package-version.outputs.current-version }}
+            version: ${{ steps.package.outputs.version }}
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -35,7 +35,7 @@ runs:
             maj=${repo}:${{ steps.semver.outputs.major }}
             min=${repo}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
             pat=${repo}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}.${{ steps.semver.outputs.patch }}
-            fullversion=${repo}:${{ steps.semver.outputs.fullversion }}
+            fullversion=${repo}:${{ steps.semver.outputs.full }}
             latest=${repo}:latest
             if [[ "$fullversion" == "$pat" ]]; then
                echo DOCKER_IMAGE_TAGS=$latest,$maj,$min,$pat >> $GITHUB_ENV

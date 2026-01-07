@@ -24,28 +24,27 @@ jobs:
       name: Check Version Match
       runs-on: ubuntu-latest
       steps:
-         - uses: actions/checkout@v4
-         - uses: martinbeentjes/npm-get-version-action@v1.3.1
-           id: package-version
-         - uses: booxmedialtd/ws-action-parse-semver@v1.4.7
+         - uses: actions/checkout@v6
+         - uses: uicpharm/workflows/actions/get-package-info@v1
+           id: package
+         - uses: uicpharm/workflows/actions/parse-semver@v1
            id: semver
            with:
-               input_string: ${{ steps.package-version.outputs.current-version }}
+               version: ${{ steps.package.outputs.version }}
          - name: Check version variations
            # The tagged version should match one of the version levels, i.e. maj, maj.min, maj.min.patch, or full version.
-           # In real like, this may be "1", "1.2", "1.2.3", or "1.2.3-beta.1". If there is a prefix in front of the version,
+           # In real life, this may be "1", "1.2", "1.2.3", or "1.2.3-beta.1". If there is a prefix in front of the version,
            # like a "v", we include that in the variants, because we want the tag to precisely match the package version.
            run: |
                tag="${{ github.ref_name }}"
-               prefix="$(echo '${{ steps.package-version.outputs.current-version }}' | grep -o '^[^0-9]*')"
-               maj=${prefix}${{ steps.semver.outputs.major }}
+               maj=${{ steps.semver.outputs.prefix }}${{ steps.semver.outputs.major }}
                min=${maj}.${{ steps.semver.outputs.minor }}
                pat=${min}.${{ steps.semver.outputs.patch }}
-               fullversion=${{ steps.semver.outputs.fullversion }}
+               full=${{ steps.semver.outputs.prefix }}${{ steps.semver.outputs.full }}
                echo "Tag: $tag"
-               echo "Package: $fullversion ($maj, $min, $pat)"
-               if [[ "$tag" != "$maj" && "$tag" != "$min" && "$tag" != "$pat" && "$tag" != "$fullversion" ]]; then
-                  echo "Tagged version $tag should match package version of $maj, $min, $pat or $fullversion."
+               echo "Package: $full ($maj, $min, $pat)"
+               if [[ "$tag" != "$maj" && "$tag" != "$min" && "$tag" != "$pat" && "$tag" != "$full" ]]; then
+                  echo "Tagged version $tag should match package version of $maj, $min, $pat or $full."
                   exit 1
                fi
            shell: bash

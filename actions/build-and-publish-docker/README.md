@@ -20,7 +20,7 @@ Called as: `uicpharm/workflows/actions/build-and-publish-docker@v1`
 
 ```yml
 steps:
-   - uses: actions/checkout@v4
+   - uses: actions/checkout@v6
    - uses: uicpharm/workflows/actions/setup-and-install@v1
    - run: npm run build
    - uses: uicpharm/workflows/actions/build-and-publish-docker@v1
