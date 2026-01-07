@@ -1,12 +1,14 @@
 {
-   "import": [ "@uicpharm/standardization/.cspell.json" ],
+   "import": [
+      "@uicpharm/standardization/.cspell.json"
+   ],
    "ignorePaths": [
       ".git"
    ],
    "words": [
-      "booxmedialtd",
       "buildx",
-      "martinbeentjes",
+      "gypfile",
+      "libc",
       "myproject"
    ]
 }
