@@ -55,3 +55,10 @@ Checks out your project, installs dependencies, and runs `test` and `standards` 
 if they exist.
 
 Called as: `uicpharm/workflows/.github/workflows/lint-and-test.yml@v1`
+
+## A Note About Security 🔓
+
+This repo is public, so these actions and workflows are reusable by any project. In the
+future, if we ever develop any reusable workflows or actions that use any logic we do not
+want exposed to the public, we should create a new repo that can hold those private
+reusable actions and workflows.
