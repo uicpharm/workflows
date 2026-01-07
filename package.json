@@ -18,6 +18,6 @@
    },
    "homepage": "https://github.com/uicpharm/workflows#readme",
    "devDependencies": {
-      "@uicpharm/standardization": "github:uicpharm/standardization#0.4.0"
+      "@uicpharm/standardization": "github:uicpharm/standardization#0.4.3"
    }
 }
