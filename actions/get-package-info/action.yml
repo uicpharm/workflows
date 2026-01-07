@@ -1,0 +1,113 @@
+name: "Get package information"
+description: "Gets fields from package.json."
+inputs:
+   path:
+      description: 'Path to the package.json file (directory only) relative to your repo.'
+      default: '.'
+   fields:
+      description: 'Space-separated list of fields to extract from package.json (i.e. "name version")'
+      default: '__DEFAULT__'
+outputs:
+   json: { description: 'Full package.json content', value: "${{ steps.pkg.outputs.json }}" }
+   custom_field: { description: 'Name of custom field extracted', value: "${{ steps.pkg.outputs.custom_field }}" }
+   custom_value: { description: 'Value of custom field extracted', value: "${{ steps.pkg.outputs.custom_value }}" }
+   name: { description: 'Package name', value: "${{ steps.pkg.outputs.name }}" }
+   version: { description: 'Package version', value: "${{ steps.pkg.outputs.version }}" }
+   description: { description: 'Package description', value: "${{ steps.pkg.outputs.description }}" }
+   keywords: { description: 'Package keywords', value: "${{ steps.pkg.outputs.keywords }}" }
+   homepage: { description: 'Package homepage', value: "${{ steps.pkg.outputs.homepage }}" }
+   bugs: { description: 'Package bugs', value: "${{ steps.pkg.outputs.bugs }}" }
+   bugs_url: { description: 'Package bugs URL', value: "${{ steps.pkg.outputs.bugs_url }}" }
+   bugs_email: { description: 'Package bugs email', value: "${{ steps.pkg.outputs.bugs_email }}" }
+   license: { description: 'Package license', value: "${{ steps.pkg.outputs.license }}" }
+   author: { description: 'Package author', value: "${{ steps.pkg.outputs.author }}" }
+   author_name: { description: 'Package author name', value: "${{ steps.pkg.outputs.author_name }}" }
+   author_email: { description: 'Package author email', value: "${{ steps.pkg.outputs.author_email }}" }
+   author_url: { description: 'Package author URL', value: "${{ steps.pkg.outputs.author_url }}" }
+   contributors: { description: 'Package contributors', value: "${{ steps.pkg.outputs.contributors }}" }
+   funding: { description: 'Package funding', value: "${{ steps.pkg.outputs.funding }}" }
+   funding_type: { description: 'Package funding type', value: "${{ steps.pkg.outputs.funding_type }}" }
+   funding_url: { description: 'Package funding URL', value: "${{ steps.pkg.outputs.funding_url }}" }
+   files: { description: 'Package files', value: "${{ steps.pkg.outputs.files }}" }
+   exports: { description: 'Package exports', value: "${{ steps.pkg.outputs.exports }}" }
+   main: { description: 'Package main', value: "${{ steps.pkg.outputs.main }}" }
+   type: { description: 'Package type', value: "${{ steps.pkg.outputs.type }}" }
+   browser: { description: 'Package browser', value: "${{ steps.pkg.outputs.browser }}" }
+   bin: { description: 'Package bin', value: "${{ steps.pkg.outputs.bin }}" }
+   man: { description: 'Package man', value: "${{ steps.pkg.outputs.man }}" }
+   directories: { description: 'Package directories', value: "${{ steps.pkg.outputs.directories }}" }
+   directories_bin: { description: 'Package directories bin', value: "${{ steps.pkg.outputs.directories_bin }}" }
+   directories_lib: { description: 'Package directories lib', value: "${{ steps.pkg.outputs.directories_lib }}" }
+   directories_doc: { description: 'Package directories doc', value: "${{ steps.pkg.outputs.directories_doc }}" }
+   directories_man: { description: 'Package directories man', value: "${{ steps.pkg.outputs.directories_man }}" }
+   repository: { description: 'Package repository', value: "${{ steps.pkg.outputs.repository }}" }
+   repository_type: { description: 'Package repository type', value: "${{ steps.pkg.outputs.repository_type }}" }
+   repository_url: { description: 'Package repository URL', value: "${{ steps.pkg.outputs.repository_url }}" }
+   scripts: { description: 'Package scripts', value: "${{ steps.pkg.outputs.scripts }}" }
+   gypfile: { description: 'Package gypfile', value: "${{ steps.pkg.outputs.gypfile }}" }
+   config: { description: 'Package config', value: "${{ steps.pkg.outputs.config }}" }
+   dependencies: { description: 'Package dependencies', value: "${{ steps.pkg.outputs.dependencies }}" }
+   devDependencies: { description: 'Package devDependencies', value: "${{ steps.pkg.outputs.devDependencies }}" }
+   peerDependencies: { description: 'Package peerDependencies', value: "${{ steps.pkg.outputs.peerDependencies }}" }
+   peerDependenciesMeta: { description: 'Package peerDependenciesMeta', value: "${{ steps.pkg.outputs.peerDependenciesMeta }}" }
+   bundleDependencies: { description: 'Package bundleDependencies', value: "${{ steps.pkg.outputs.bundleDependencies }}" }
+   optionalDependencies: { description: 'Package optionalDependencies', value: "${{ steps.pkg.outputs.optionalDependencies }}" }
+   overrides: { description: 'Package overrides', value: "${{ steps.pkg.outputs.overrides }}" }
+   engines: { description: 'Package engines', value: "${{ steps.pkg.outputs.engines }}" }
+   os: { description: 'Package os', value: "${{ steps.pkg.outputs.os }}" }
+   cpu: { description: 'Package cpu', value: "${{ steps.pkg.outputs.cpu }}" }
+   libc: { description: 'Package libc', value: "${{ steps.pkg.outputs.libc }}" }
+   devEngines: { description: 'Package devEngines', value: "${{ steps.pkg.outputs.devEngines }}" }
+   private: { description: 'Package private', value: "${{ steps.pkg.outputs.private }}" }
+   publishConfig: { description: 'Package publishConfig', value: "${{ steps.pkg.outputs.publishConfig }}" }
+   workspaces: { description: 'Package workspaces', value: "${{ steps.pkg.outputs.workspaces }}" }
+runs:
+   using: "composite"
+   steps:
+      - name: Get package info
+        id: pkg
+        run: |
+            # Determine package path
+            package_path=${{ inputs.path }}/package.json
+            if [[ -f "$package_path" ]]; then
+               echo "Using package: $package_path"
+            else
+               echo "Error: package.json not found at $package_path"
+               exit 1
+            fi
+            # Determine fields to extract
+            available_fields='name version description keywords homepage bugs bugs.url bugs.email license author author.name author.email author.url contributors funding funding.type funding.url files exports main type browser bin man directories directories.bin directories.lib directories.doc directories.man repository repository.type repository.url scripts gypfile config dependencies devDependencies peerDependencies peerDependenciesMeta bundleDependencies optionalDependencies overrides engines os cpu libc devEngines private publishConfig workspaces'
+            fields='${{ inputs.fields }}'
+            [[ $fields == '__DEFAULT__' ]] && fields="$available_fields"
+            # Raw JSON
+            json=$(jq . "$package_path")
+            {
+               echo "json<<EOF"
+               echo "$json"
+               echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            # Extract specified fields
+            for field in $fields; do
+               esc_field=${field//./_}
+               # Safely extracts key in all possible circumstances:
+               # If you ask for `author` and it is a string, returns the string. If an object, it returns JSON.
+               # If you ask for `author.name` and `author` is a string, it returns empty. Otherwise, returns `author.name` value.
+               value=$(jq -r --arg field "$field" '
+                  reduce ($field | split("."))[] as $k (.;
+                     if type == "object" and has($k) then .[$k]
+                     else empty end
+                  ) // empty
+               ' <<< "$json")
+               if [[ ! $available_fields =~ "$field" ]]; then
+                  echo -e "\nCustom field: $field"
+                  echo "custom_field=$field" >> "$GITHUB_OUTPUT"
+                  esc_field=custom_value
+               fi
+               echo -e "\n$esc_field:\n$value"
+               {
+                  echo "$esc_field<<EOF"
+                  echo "$value"
+                  echo "EOF"
+               } >> "$GITHUB_OUTPUT"
+            done
+        shell: bash
