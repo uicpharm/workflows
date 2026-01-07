@@ -1,0 +1,62 @@
+name: "Parse semver version string"
+description: "Parse a semantic version string into its components."
+inputs:
+   version:
+      description: 'Semantic version string to parse'
+      required: true
+outputs:
+   valid:
+      description: 'Whether the version string is a valid semver'
+      value: ${{ steps.parse.outputs.valid }}
+   prefix:
+      description: 'Leading non-numeric prefix (e.g., "v")'
+      value: ${{ steps.parse.outputs.prefix }}
+   full:
+      description: 'Full version string without prefix'
+      value: ${{ steps.parse.outputs.full }}
+   major:
+      description: 'Major version number'
+      value: ${{ steps.parse.outputs.major }}
+   minor:
+      description: 'Minor version number'
+      value: ${{ steps.parse.outputs.minor }}
+   patch:
+      description: 'Patch version number'
+      value: ${{ steps.parse.outputs.patch }}
+   prerelease:
+      description: 'Prerelease identifier'
+      value: ${{ steps.parse.outputs.prerelease }}
+   build:
+      description: 'Build metadata'
+      value: ${{ steps.parse.outputs.build }}
+runs:
+   using: "composite"
+   steps:
+      - name: Parse version
+        id: parse
+        run: |
+            version=${{ inputs.version }}
+            # Extract leading non-numeric characters as prefix and remove from version
+            prefix="${version%%[0-9]*}"
+            version="${version#$prefix}"
+            # Regex: captures major(1), minor(2), patch(3), prerelease value(5), build value(8)
+            # Ref: https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+            re='^([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)\.([0]|[1-9][0-9]*)(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
+            echo "prefix=$prefix" >> $GITHUB_OUTPUT
+            echo "full=$version" >> $GITHUB_OUTPUT
+            if [[ $version =~ $re ]]; then
+               echo 'valid=true' >> $GITHUB_OUTPUT
+               echo "major=${BASH_REMATCH[1]}" >> $GITHUB_OUTPUT
+               echo "minor=${BASH_REMATCH[2]}" >> $GITHUB_OUTPUT
+               echo "patch=${BASH_REMATCH[3]}" >> $GITHUB_OUTPUT
+               echo "prerelease=${BASH_REMATCH[5]}" >> $GITHUB_OUTPUT
+               echo "build=${BASH_REMATCH[8]}" >> $GITHUB_OUTPUT
+            else
+               echo 'valid=false' >> $GITHUB_OUTPUT
+               echo 'major=' >> $GITHUB_OUTPUT
+               echo 'minor=' >> $GITHUB_OUTPUT
+               echo 'patch=' >> $GITHUB_OUTPUT
+               echo 'prerelease=' >> $GITHUB_OUTPUT
+               echo 'build=' >> $GITHUB_OUTPUT >> $GITHUB_OUTPUT
+            fi
+        shell: bash
