@@ -18,6 +18,19 @@ A composite action to help make building your project and publishing a Docker im
 
 [Read more](./actions/build-and-publish-docker/README.md)
 
+### `get-package-info`
+
+Parses a package.json file and returns the fields you specify.
+
+[Read more](./actions/get-package-info/README.md)
+
+### `parse-semver`
+
+Will parse all of the components of a semver version string, without using any
+dependencies.
+
+[Read more](./actions/parse-semver/README.md)
+
 ### `setup-and-install`
 
 Sets up a Node.js environment and installs your project's dependencies.
