@@ -1,6 +1,6 @@
 {
    "name": "workflows",
-   "version": "v1.2.0",
+   "version": "v1.3.0",
    "description": "Reusable workflows for uicpharm UIC Pharmacy projects.",
    "scripts": {
       "test": "check-node-version --node $(cat .nvmrc) --npm 11.6.2 --print",
