@@ -3,7 +3,7 @@
    "version": "v1.3.0",
    "description": "Reusable workflows for uicpharm UIC Pharmacy projects.",
    "scripts": {
-      "test": "check-node-version --node $(cat .nvmrc) --npm 11.6.2 --print",
+      "test": "check-node-version --node $(cat .nvmrc) --npm 11.11.0 --print",
       "standards": "npm run yamllint && npm run markdownlint && npm run cspell && npm run commitlint",
       "commitlint": "commitlint --from 52948ca0c9552bc",
       "cspell": "cspell . --show-suggestions --no-progress",
