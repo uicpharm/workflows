@@ -1,0 +1,9 @@
+{
+   "recommendations": [
+      "DavidAnson.vscode-markdownlint",
+      "EditorConfig.EditorConfig",
+      "github.vscode-github-actions",
+      "redhat.vscode-yaml",
+      "streetsidesoftware.code-spell-checker"
+   ]
+}
